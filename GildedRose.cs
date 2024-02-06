@@ -11,108 +11,86 @@ namespace csharp
 
         public GildedRose(IList<Item> Items) => this.Items = Items;
 
-        //private static void TryIncreaseQuality(Item item)
-        //{
-        //    if (item.Quality < maxAmountOfQuality)
-        //    {
-        //        item.Quality++;
-        //    };
-        //}
-
-        //private static void TryIncreaseQuality(Item item)
-        //{
-        //    if (item.Quality < maxAmountOfQuality)
-        //    {
-        //        item.Quality++;
-        //    };
-        //}
-
-        private static int CalcualteIncreaseQuality(string name, int sellIn)
-        {
-            if (name.Equals("Aged Brie"))
+        private static int CalculateIncreaseQuality(string name, int sellIn) =>
+            name switch
             {
-                if (sellIn < 0)
+                "Aged Brie" => sellIn < 0 ? 2 : 1,
+                "Backstage passes to a TAFKAL80ETC concert" => sellIn switch
                 {
-                    return 2;
-                }
-                else
-                {
-                    return 1;
-                }
-            }
-            else if (name.Equals("Backstage passes to a TAFKAL80ETC concert"))
-            {
-                if (sellIn < 5)
-                {
-                    return 3;
-                }
-                else if (sellIn < 10)
-                {
-                    return 2;
-                }
-                else if (sellIn < 0)
-                {
-                    return -1;
-                }
-                else
-                {
-                    return 1;
-                }
-            }
-            else if (name.Equals("Sulfuras, Hand of Ragnaros"))
-            {
-                return 1;
-            }
-
-            return sellIn < 0 ? -2 : -1;
-        }
+                    < 0 => -1,
+                    < 5 => 3,
+                    < 10 => 2,
+                    _ => 1
+                },
+                "Sulfuras, Hand of Ragnaros" => 1,
+                _ => sellIn < 0 ? -2 : -1,
+            };
 
         private static void Update(Item item)
         {
-            if (item.Name.Equals("Aged Brie"))
+            switch (item.Name)
             {
-                item.SellIn--;
+                case "Sulfuras, Hand of Ragnaros":
+                    UpdateSulfuras(item);
+                    break;
+                case "Aged Brie":
+                    UpdateAgedBrie(item);
+                    break;
+                case "Backstage passes to a TAFKAL80ETC concert":
+                    UpdateBackstagePasses(item);
+                    break;
+                default:
+                    UpdateOtherItems(item);
+                    break;
+            }
+        }
 
-                if (item.Quality < 50)
+        private static void UpdateSulfuras(Item item)
+        {
+            if (item.Quality < 50)
+            {
+                item.Quality += CalculateIncreaseQuality(item.Name, item.SellIn);
+            }
+        }
+
+        private static void UpdateAgedBrie(Item item)
+        {
+            item.SellIn--;
+            if (item.Quality < 50)
+            {
+                item.Quality += CalculateIncreaseQuality(item.Name, item.SellIn);
+            }
+        }
+
+        private static void UpdateBackstagePasses(Item item)
+        {
+            item.SellIn--;
+            if (item.Quality <= 50)
+            {
+                item.Quality += CalculateIncreaseQuality(item.Name, item.SellIn);
+
+                if (item.Quality > 50)
                 {
-                    item.Quality += CalcualteIncreaseQuality(item.Name, item.SellIn);
+                    item.Quality = 50;
+                }
+
+                if (item.SellIn < 0)
+                {
+                    item.Quality = 0;
                 }
             }
-            else if (item.Name.Equals("Backstage passes to a TAFKAL80ETC concert"))
+        }
+
+        private static void UpdateOtherItems(Item item)
+        {
+            item.SellIn--;
+            if (item.Quality > 0)
             {
-                item.SellIn--;
-
-                if (item.Quality <= 50)
+                item.Quality += CalculateIncreaseQuality(item.Name, item.SellIn);
+                if (item.Quality < 0)
                 {
-                    item.Quality += CalcualteIncreaseQuality(item.Name, item.SellIn);
-
-                    if (item.Quality > 50)
-                    {
-                        item.Quality = 50;
-                    }
-
-                    if (item.SellIn < 0)
-                    {
-                        item.Quality = 0;
-                    }
-                }
-            }
-            else if (item.Name.Equals("Sulfuras, Hand of Ragnaros"))
-            {
-                if (item.Quality < 50)
-                {
-                    item.Quality += CalcualteIncreaseQuality(item.Name, item.SellIn);
-                }
-            }
-            else
-            {
-                item.SellIn--;
-
-                if (item.Quality > 0)
-                {
-                    item.Quality += CalcualteIncreaseQuality(item.Name, item.SellIn);
-                    if (item.Quality < 0) item.Quality = 0;
-                }
+                    item.Quality = 0;
+                };
             }
         }
 
