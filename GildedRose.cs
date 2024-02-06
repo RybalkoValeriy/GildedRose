@@ -13,11 +13,11 @@ namespace csharp
         {
             Items.ForEach(item =>
             {
-                if (item.Name != "Aged Brie" && item.Name != "Backstage passes to a TAFKAL80ETC concert")
+                if (!item.Name.Equals("Aged Brie") && !item.Name.Equals("Backstage passes to a TAFKAL80ETC concert"))
                 {
                     if (item.Quality > 0)
                     {
-                        if (item.Name != "Sulfuras, Hand of Ragnaros")
+                        if (!item.Name.Equals("Sulfuras, Hand of Ragnaros"))
                         {
                             item.Quality--;
                         }
@@ -29,7 +29,7 @@ namespace csharp
                     {
                         item.Quality++;
 
-                        if (item.Name == "Backstage passes to a TAFKAL80ETC concert")
+                        if (item.Name.Equals("Backstage passes to a TAFKAL80ETC concert"))
                         {
                             if (item.SellIn < 11)
                             {
@@ -50,20 +50,20 @@ namespace csharp
                     }
                 }
 
-                if (item.Name != "Sulfuras, Hand of Ragnaros")
+                if (!item.Name.Equals("Sulfuras, Hand of Ragnaros"))
                 {
                     item.SellIn--;
                 }
 
                 if (item.SellIn < 0)
                 {
-                    if (item.Name != "Aged Brie")
+                    if (!item.Name.Equals("Aged Brie"))
                     {
-                        if (item.Name != "Backstage passes to a TAFKAL80ETC concert")
+                        if (!item.Name.Equals("Backstage passes to a TAFKAL80ETC concert"))
                         {
                             if (item.Quality > 0)
                             {
-                                if (item.Name != "Sulfuras, Hand of Ragnaros")
+                                if (!item.Name.Equals("Sulfuras, Hand of Ragnaros"))
                                 {
                                     item.Quality--;
                                 }
